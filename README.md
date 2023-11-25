@@ -1,1 +1,1 @@
-# fetching-dynamically-from-API-as2
+# fetch-and-display-from-API-as2
