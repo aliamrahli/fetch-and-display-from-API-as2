@@ -1,35 +1,44 @@
 const endpoint = 'https://dummyjson.com/products';
 
-const fetchData = async () => {
-  try {
-    const response = await fetch(endpoint);
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch data. Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    displayData(data); // Call the function to display data
-  } catch (error) {
-    console.error(`Error fetching data: ${error.message}`);
+// Function to handle errors during the fetch operation
+const handleFetchErrors = (response) => {
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
   }
+  return response.json();
 };
 
-const displayData = (data) => {
-  const productList = document.getElementById('productList');
 
-  data.forEach((product) => {
-    const listItem = document.createElement('li');
-    listItem.innerHTML = `
-      <strong>Title:</strong> ${product.title}<br>
-      <strong>Price:</strong> ${product.price}<br>
-      <strong>Discount:</strong> ${product.discount}<br>
-      <strong>Category:</strong> ${product.category}<br>
-      <strong>Stock:</strong> ${product.stock}<br>
-      <img src="${product.thumbnail}" alt="Thumbnail"><br><br>
+const displayProducts = (products) => {
+  const productContainer = document.getElementById('productContainer');
+
+  products.forEach((product) => {
+    const productDiv = document.createElement('div');
+    productDiv.classList.add('product');
+
+    // Display product details
+    productDiv.innerHTML = `
+      <h2>${product.title}</h2>
+      <p>Price: $${product.price}</p>
+      <p>Discount: ${product.discount}%</p>
+      <p>Category: ${product.category}</p>
+      <p>Stock: ${product.stock}</p>
+      <img src="${product.thumbnail}" alt="${product.title} thumbnail">
     `;
-    productList.appendChild(listItem);
+
+    // Append the product div to the container
+    productContainer.appendChild(productDiv);
   });
 };
 
-fetchData();
+// Fetch data from the /products endpoint
+fetch(endpoint)
+  .then(handleFetchErrors)
+  .then((data) => {
+    // Handle the data received from the server
+    console.log('Products data:', data);
+  })
+  .catch((error) => {
+    // Handle any errors that occurred during the fetch operation
+    console.error('Error fetching data:', error.message);
+  });
