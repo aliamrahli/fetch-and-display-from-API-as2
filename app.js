@@ -1,4 +1,8 @@
 const endpoint = 'https://dummyjson.com/products';
+let products;
+let allCategories;
+let productDiv;
+// const titles = None;
 
 // Function to handle errors during the fetch operation
 const handleFetchErrors = (response) => {
@@ -8,26 +12,56 @@ const handleFetchErrors = (response) => {
   return response.json();
 };
 
+const storeCategories = (data) => {
+  allCategories = data
+  filterByCategory()
+}
+
+const filterByCategory = () => {
+    productDiv = document.getElementsByClassName("product")
+
+
+    let categorySelect = document.getElementById("categorySelect");
+    
+    for (i=0;i<allCategories.length;i++) {
+      let categoryOption = document.createElement('option')
+      categoryOption.value = allCategories[i]
+      categoryOption.text = allCategories[i]
+      categorySelect.appendChild(categoryOption)
+    }
+
+    for(i=0;i<productDiv.length;i++){
+      selectedCategory = categorySelect.value.toLowerCase();
+      categoryP = productDiv[i].querySelector('.category').innerHTML;
+      // console.log(selectedCategory)
+      
+      console.log(productDiv[i].category)
+      if(selectedCategory == "all") {
+        productDiv[i].style.display = "block";
+        
+      }
+
+      else if(categoryP.toLowerCase().includes(selectedCategory))
+      {
+          productDiv[i].style.display = "";
+      }
+
+      else 
+        productDiv[i].style.display = "none";
+    }
+
+
+
+}
+
+
+
 
 const displayProducts = (data) => {
-  const productContainer = document.getElementById('productContainer');
+      const productContainer = document.getElementById('productContainer');
   
-  const products = data.products;
+      products = data.products;
 
-
-  // Populate category select options
-  // let categories = [...new Set(products.map(product => product.category))];
-  // categories.forEach(category => {
-  //     const option = document.createElement('option');
-  //     option.value = category;
-  //     option.textContent = category;
-  //     categorySelect.appendChild(option);
-  // });
-
-  
-
-  // Check if products is an array
-    if (Array.isArray(products)) {
       products.forEach((product) => {
         const productDiv = document.createElement('div');
         productDiv.classList.add('product');
@@ -35,9 +69,10 @@ const displayProducts = (data) => {
         // Display product details
         productDiv.innerHTML = `
           <h2>${product.title}</h2>
+          <p class="description">Description: ${product.description}</p>
           <p>Price: $${product.price}</p>
           <p>Discount: ${product.discountPercentage}%</p>
-          <p>Category: ${product.category}</p>
+          <p class="category">Category: ${product.category}</p>
           <p>Stock: ${product.stock}</p>
           <a href="product_info.html?id=${product.id}">
             <img src="${product.thumbnail}" alt="${product.title} thumbnail">
@@ -47,53 +82,38 @@ const displayProducts = (data) => {
         // Append the product div to the container
         productContainer.appendChild(productDiv);
       });
-    } else {
-      console.error('Invalid data format. Expected an array of products.');
-    }
 };
-
 
 const searchProducts = () => {
-  const searchInput = document.getElementById('searchInput');
-  const keyword = searchInput.value.trim();
+    let productDiv = document.getElementsByClassName("product")
+    input = document.getElementById("searchInput");
+    filter = input.value.toLowerCase()
+    
 
-  // Check if a keyword is provided
-  if (keyword !== '') {
-    const searchEndpoint = `https://dummyjson.com/products/search?q=phone`;
+    for(i = 0; i < productDiv.length; i++) {
+        categoryP = productDiv[i].querySelector('.category').innerHTML;
+        titleH2 = productDiv[i].getElementsByTagName('h2')[0].innerHTML;
+        descP = productDiv[i].querySelector('.description').innerHTML;
 
-    fetch(searchEndpoint)
-      .then(handleFetchErrors)
-      .then((data) => {
-        // Handle the data received from the server
-        displayProducts(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching search results:', error.message);
-      });
-  } else {
-    console.error('Please enter a keyword to search.');
-  }
-};
+        if(categoryP.toLowerCase().includes(filter) || titleH2.toLowerCase().includes(filter) 
+        || descP.toLowerCase().includes(filter)) {  
+
+          productDiv[i].style.display = "";
+
+    } else {
+      productDiv[i].style.display = "none";
+    }
+
+    }
+
+      
+
+
+
+}
 
 
 const displayProductInfo = (product, container) => {
-  container.innerHTML = `
-    <h2>${product.title}</h2>
-    <p>Price: $${product.price}</p>
-    <p>Discount: ${product.discountPercentage}%</p>
-    <p>Category: ${product.category}</p>
-    <p>Stock: ${product.stock}</p>
-    <img src="${product.thumbnail}" alt="${product.title} thumbnail">
-    <!-- Add additional details as needed -->
-
-    <!-- Gallery Section -->
-    <div class="gallery">
-      <!-- Add gallery images dynamically -->
-      ${product.gallery.map(image => `<img src="${image}" alt="${product.title} gallery image">`).join('')}
-    </div>
-  `;
-
-  // Show the product info container and hide the product container
   container.style.display = 'block';
   document.getElementById('productContainer').style.display = 'none';
 };
@@ -110,3 +130,15 @@ fetch(endpoint)
     // Handle any errors that occurred during the fetch operation
     console.error('Error fetching data:', error.message);
   });
+
+  fetch('https://dummyjson.com/products/categories')
+.then(handleFetchErrors)
+.then((data)=>{
+    storeCategories(data);
+})
+.catch((error) => {
+  // Handle any errors that occurred during the fetch operation
+  console.error('Error fetching data:', error.message);
+});
+
+
