@@ -4,7 +4,13 @@ let allCategories;
 let productDiv;
 // const titles = None;
 
-// Function to handle errors during the fetch operation
+const clearInput = () => {
+  document.getElementById('searchInput').value = '';
+};
+
+// Attach the function to the unload event
+window.addEventListener('unload', clearInput);
+
 const handleFetchErrors = (response) => {
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -19,7 +25,7 @@ const storeCategories = (data) => {
 
 const filterByCategory = () => {
     productDiv = document.getElementsByClassName("product")
-
+    console.log("salam")
 
     let categorySelect = document.getElementById("categorySelect");
     
@@ -30,25 +36,73 @@ const filterByCategory = () => {
       categorySelect.appendChild(categoryOption)
     }
 
+    
+
     for(i=0;i<productDiv.length;i++){
-      selectedCategory = categorySelect.value.toLowerCase();
-      categoryP = productDiv[i].querySelector('.category').innerHTML;
-      // console.log(selectedCategory)
+      // if(productDiv[i].style.display!='none'){
+            selectedCategory = categorySelect.value.toLowerCase();
+            categoryP = productDiv[i].querySelector('.category').innerHTML;
+            // console.log(selectedCategory)
+            
+            console.log(productDiv[i].category)
+            if(selectedCategory == "all") {
+              productDiv[i].style.display = "block";
+              
+            }
       
-      console.log(productDiv[i].category)
-      if(selectedCategory == "all") {
-        productDiv[i].style.display = "block";
-        
+            else if(categoryP.toLowerCase().includes(selectedCategory))
+            {
+                productDiv[i].style.display = "";
+            }
+      
+            else 
+              productDiv[i].style.display = "none";
+          // }
       }
+      
 
-      else if(categoryP.toLowerCase().includes(selectedCategory))
-      {
+
+
+}
+
+const searchProducts = () => {
+  let productDiv = document.getElementsByClassName("product")
+  input = document.getElementById("searchInput");
+  filter = input.value.toLowerCase()
+  let categorySelect = document.getElementById("categorySelect");
+  selectedCategory = categorySelect.value.toLowerCase();
+
+  for (i=0;i<allCategories.length;i++) {
+    let categoryOption = document.createElement('option')
+    categoryOption.value = allCategories[i]
+    categoryOption.text = allCategories[i]
+    categorySelect.appendChild(categoryOption)
+  }
+
+  
+
+  for(i = 0; i < productDiv.length; i++) {
+      
+
+      // if(productDiv[i].style.display!='none'){
+        categoryP = productDiv[i].querySelector('.category').innerHTML;
+        titleH2 = productDiv[i].getElementsByTagName('h2')[0].innerHTML;
+        descP = productDiv[i].querySelector('.description').innerHTML;
+        if((categoryP.toLowerCase().includes(filter) || titleH2.toLowerCase().includes(filter) 
+        || descP.toLowerCase().includes(filter))&&(categoryP.toLowerCase().includes(selectedCategory)||selectedCategory == "all") ) {  
+
           productDiv[i].style.display = "";
-      }
 
-      else 
-        productDiv[i].style.display = "none";
-    }
+          } else {
+            productDiv[i].style.display = "none";
+          }
+      
+      // }
+  }
+
+      
+
+    // filterByCategory(filter);
 
 
 
@@ -84,33 +138,7 @@ const displayProducts = (data) => {
       });
 };
 
-const searchProducts = () => {
-    let productDiv = document.getElementsByClassName("product")
-    input = document.getElementById("searchInput");
-    filter = input.value.toLowerCase()
-    
 
-    for(i = 0; i < productDiv.length; i++) {
-        categoryP = productDiv[i].querySelector('.category').innerHTML;
-        titleH2 = productDiv[i].getElementsByTagName('h2')[0].innerHTML;
-        descP = productDiv[i].querySelector('.description').innerHTML;
-
-        if(categoryP.toLowerCase().includes(filter) || titleH2.toLowerCase().includes(filter) 
-        || descP.toLowerCase().includes(filter)) {  
-
-          productDiv[i].style.display = "";
-
-    } else {
-      productDiv[i].style.display = "none";
-    }
-
-    }
-
-      
-
-
-
-}
 
 
 const displayProductInfo = (product, container) => {

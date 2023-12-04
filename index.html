@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <input type="text" id="searchInput" placeholder="Search..." onkeyup="searchProducts()">
+    <input type="text" id="searchInput" placeholder="Search..." onkeyup="searchProducts()">  
     <label for="categorySelect">Select Category:</label>
-    <select id="categorySelect" onchange="filterByCategory()">
+    <select id="categorySelect" onchange="searchProducts()">
         <option value="all">All Categories</option>
     </select>
     <div id="productContainer"></div>
