@@ -1,5 +1,5 @@
 // product_info.js
-const endpoint = 'https://dummyjson.com/products';
+let endpoint;
 const handleFetchErrors = (response) => {
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -9,14 +9,14 @@ const handleFetchErrors = (response) => {
 document.addEventListener('DOMContentLoaded', () => {
 
     const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
-  
-    // Fetch data for the specific product based on the ID
+    let productId = urlParams.get('id');
+
+    endpoint = 'https://dummyjson.com/products/'+`${productId}`
+    console.log(endpoint)
     fetch(endpoint)
       .then(handleFetchErrors)
       .then((data) => {
-        const product = data.products[productId-1];
-        console.log(product)
+        const product = data;
         if (product) {
           displayProductInfo(product);
         } else {
@@ -30,13 +30,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayProductInfo = (product) => {
       const productInfoContainer = document.getElementById('productInfoContainer');
       productInfoContainer.innerHTML = `
-        <h2>${product.title}</h2>
-        <p>Price: $${product.price}</p>
-        <p>Discount: ${product.discountPercentage}%</p>
-        <p>Category: ${product.category}</p>
-        <p>Stock: ${product.stock}</p>
-        <p>Description: ${product.description}</p>
-        <p>Rating: ${product.rating}</p>
+        <h2 class="info">${product.title}</h2>
+        <p class="pinfo">Price: $${product.price}</p>
+        <p class="pinfo">Discount: ${product.discountPercentage}%</p>
+        <p class="pinfo">Category: ${product.category}</p>
+        <p class="pinfo">Stock: ${product.stock}</p>
+        <p class="pinfo">Rating: ${product.rating}</p>
+        <p class="pinfo">Description: ${product.description}</p>
   
         ${product.images && product.images.length > 0 ? 
           `<div class="gallery">
