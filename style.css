@@ -32,7 +32,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   
-  justify-content: space-around;
+  justify-content: center;
 }
 .product {
     border: 1px solid #444;

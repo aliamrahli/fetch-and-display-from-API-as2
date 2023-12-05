@@ -1,4 +1,3 @@
-const endpoint = 'https://dummyjson.com/products';
 let products;
 let allCategories;
 let productDiv;
@@ -65,7 +64,6 @@ const filterProducts = (data) => {
         productDiv.innerHTML = `
         <a href="product_info.html?id=${product.id}">
             <h2>${product.title}</h2>
-            <p class="description">Description: ${product.description}</p>
             <p>Price: $${product.price}</p>
             <p>Discount: ${product.discountPercentage}%</p>
             <p class="category">Category: ${product.category}</p>
@@ -78,7 +76,6 @@ const filterProducts = (data) => {
       }
     }
   })
-  
         if(productContainer.innerHTML=='') {
           const h1 = document.createElement('h1')
           h1.id = "text"
@@ -88,10 +85,6 @@ const filterProducts = (data) => {
   
 }
 
-const displayProductInfo = (product, container) => {
-  container.style.display = 'block';
-  document.getElementById('productContainer').style.display = 'none';
-};
 
 const fetchPages = (event) => {
   id = event.target.id.match(/\d+/)[0]

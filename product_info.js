@@ -16,12 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch(endpoint)
       .then(handleFetchErrors)
       .then((data) => {
-        const product = data;
-        if (product) {
-          displayProductInfo(product);
-        } else {
-          console.error('Product not found.');
-        }
+          displayProductInfo(data);
       })
       .catch((error) => {
         console.error('Error fetching data:', error.message);
@@ -38,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="pinfo">Rating: ${product.rating}</p>
         <p class="pinfo">Description: ${product.description}</p>
   
-        ${product.images && product.images.length > 0 ? 
+        ${product.images.length > 0 ? 
           `<div class="gallery">
             ${product.images.map(image => `<img src="${image}" alt="${product.title} image">`).join('')}
           </div>` : ''
