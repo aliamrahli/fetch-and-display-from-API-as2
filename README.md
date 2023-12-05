@@ -12,5 +12,5 @@ To install this program, you can either clone this repository by using git clone
 + How to run?
 ```
 
-
+To run this program you can either use this link https://aliamrahli.github.io/fetch-and-display-from-API-as2/ , or you can open the repository that you downloaded or cloned from github. You need to just open that repository on a particular IDE and run it. 
 
