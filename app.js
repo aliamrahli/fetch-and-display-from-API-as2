@@ -2,13 +2,12 @@ const endpoint = 'https://dummyjson.com/products';
 let products;
 let allCategories;
 let productDiv;
-// const titles = None;
+let productContainer;
 
 const clearInput = () => {
   document.getElementById('searchInput').value = '';
 };
 
-// Attach the function to the unload event
 window.addEventListener('unload', clearInput);
 
 const handleFetchErrors = (response) => {
@@ -18,144 +17,75 @@ const handleFetchErrors = (response) => {
   return response.json();
 };
 
+
 const storeCategories = (data) => {
-  allCategories = data
-  filterByCategory()
-}
-
-const filterByCategory = () => {
+    allCategories = data
     productDiv = document.getElementsByClassName("product")
-    console.log("salam")
-
     let categorySelect = document.getElementById("categorySelect");
     
     for (i=0;i<allCategories.length;i++) {
       let categoryOption = document.createElement('option')
-      categoryOption.value = allCategories[i]
-      categoryOption.text = allCategories[i]
+      categoryOption.value,categoryOption.text = allCategories[i]
       categorySelect.appendChild(categoryOption)
     }
-
+  }
     
 
-    for(i=0;i<productDiv.length;i++){
-      // if(productDiv[i].style.display!='none'){
-            selectedCategory = categorySelect.value.toLowerCase();
-            categoryP = productDiv[i].querySelector('.category').innerHTML;
-            // console.log(selectedCategory)
-            
-            console.log(productDiv[i].category)
-            if(selectedCategory == "all") {
-              productDiv[i].style.display = "block";
-              
-            }
-      
-            else if(categoryP.toLowerCase().includes(selectedCategory))
-            {
-                productDiv[i].style.display = "";
-            }
-      
-            else 
-              productDiv[i].style.display = "none";
-          // }
-      }
-      
-
-
+const searchProducts = () => {
+  let searchInput = document.getElementById("searchInput")
+  let filter = searchInput.value.toLowerCase()
+  let apiURL = "https://dummyjson.com/products/search?q=" + encodeURIComponent(filter)
+  fetch(apiURL)
+    .then(handleFetchErrors)
+    .then((data)=> {
+        filterProducts(data)
+    })
+    .catch((error) => {
+      console.error('Error fetching data:', error.message);
+    });
 
 }
 
-const searchProducts = () => {
-  let productDiv = document.getElementsByClassName("product")
-  input = document.getElementById("searchInput");
-  filter = input.value.toLowerCase()
+const filterProducts = (data) => {
   let categorySelect = document.getElementById("categorySelect");
   selectedCategory = categorySelect.value.toLowerCase();
+  productContainer = document.getElementById('productContainer');
+  productContainer.innerHTML = ""
+  products = data.products;
+  products.forEach((product) => {
+    const productDiv = document.createElement('div');
+    productDiv.classList.add('product');
+    if(selectedCategory=="all" || product.category == selectedCategory) {
 
-  for (i=0;i<allCategories.length;i++) {
-    let categoryOption = document.createElement('option')
-    categoryOption.value = allCategories[i]
-    categoryOption.text = allCategories[i]
-    categorySelect.appendChild(categoryOption)
-  }
-
-  
-
-  for(i = 0; i < productDiv.length; i++) {
-      
-
-      // if(productDiv[i].style.display!='none'){
-        categoryP = productDiv[i].querySelector('.category').innerHTML;
-        titleH2 = productDiv[i].getElementsByTagName('h2')[0].innerHTML;
-        descP = productDiv[i].querySelector('.description').innerHTML;
-        if((categoryP.toLowerCase().includes(filter) || titleH2.toLowerCase().includes(filter) 
-        || descP.toLowerCase().includes(filter))&&(categoryP.toLowerCase().includes(selectedCategory)||selectedCategory == "all") ) {  
-
-          productDiv[i].style.display = "";
-
-          } else {
-            productDiv[i].style.display = "none";
-          }
-      
-      // }
-  }
-
-      
-
-    // filterByCategory(filter);
-
-
-
-}
-
-
-
-
-const displayProducts = (data) => {
-      const productContainer = document.getElementById('productContainer');
-  
-      products = data.products;
-
-      products.forEach((product) => {
-        const productDiv = document.createElement('div');
-        productDiv.classList.add('product');
-
-        // Display product details
-        productDiv.innerHTML = `
+      productDiv.innerHTML = `
+      <a href="product_info.html?id=${product.id}">
           <h2>${product.title}</h2>
           <p class="description">Description: ${product.description}</p>
           <p>Price: $${product.price}</p>
           <p>Discount: ${product.discountPercentage}%</p>
           <p class="category">Category: ${product.category}</p>
           <p>Stock: ${product.stock}</p>
-          <a href="product_info.html?id=${product.id}">
-            <img src="${product.thumbnail}" alt="${product.title} thumbnail">
-          </a>
-        `;
+          <img src="${product.thumbnail}" alt="${product.title} thumbnail">
+      </a>
+    `;
 
-        // Append the product div to the container
-        productContainer.appendChild(productDiv);
-      });
-};
-
-
-
+    productContainer.appendChild(productDiv);
+    }
+  });
+}
 
 const displayProductInfo = (product, container) => {
   container.style.display = 'block';
   document.getElementById('productContainer').style.display = 'none';
 };
 
-// Fetch data from the /products endpoint
-fetch(endpoint)
+fetch('https://dummyjson.com/products?limit=100')
   .then(handleFetchErrors)
   .then((data) => {
-    // Handle the data received from the server
-    displayProducts(data);
+    filterProducts(data);
     console.log(data)
   })
   .catch((error) => {
-    // Handle any errors that occurred during the fetch operation
     console.error('Error fetching data:', error.message);
   });
 
@@ -165,7 +95,6 @@ fetch(endpoint)
     storeCategories(data);
 })
 .catch((error) => {
-  // Handle any errors that occurred during the fetch operation
   console.error('Error fetching data:', error.message);
 });
 

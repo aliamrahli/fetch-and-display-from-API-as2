@@ -8,11 +8,16 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <input type="text" id="searchInput" placeholder="Search..." onkeyup="searchProducts()">  
-    <label for="categorySelect">Select Category:</label>
-    <select id="categorySelect" onchange="searchProducts()">
-        <option value="all">All Categories</option>
-    </select>
+    <h1>Trend Market</h1>
+    <div id="navbar">
+        <span>Search:</span>
+        <input type="text" id="searchInput" placeholder="Search..." onkeyup="searchProducts()"> 
+        <label for="categorySelect">Select Category:</label>
+        <select id="categorySelect" onchange="searchProducts()">
+            <option value="all">All Categories</option>
+        </select>
+    </div>
+    
     <div id="productContainer"></div>
     <div id="productInfoContainer" style="display: none;"></div>
 </body>
